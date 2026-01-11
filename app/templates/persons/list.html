@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Pessoas{% endblock %}
+
+{% block content %}
+<div class="person-list">
+    <div class="person-list__header">
+        <h1 class="person-list__title">
+            <span class="material-icons person-list__icon">group</span>
+            Pessoas
+        </h1>
+        <div class="person-list__controls">
+            <button type="button" class="icon-button" onclick="location.reload()" aria-label="Atualizar agora" title="Atualizar agora">
+                <span class="material-icons">refresh</span>
+            </button>
+            <a href="{% url 'person_create' %}" class="btn btn-primary">
+                <span class="material-icons">person_add</span>
+                Nova Pessoa
+            </a>
+        </div>
+    </div>
+
+    {% if persons %}
+    <div class="card">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th class="text-right">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for person in persons %}
+                <tr class="table-row">
+                    <td>{{ person.id }}</td>
+                    <td><strong>{{ person.name }}</strong></td>
+                    <td>
+                        <a href="mailto:{{ person.email }}" class="email-link">
+                            {{ person.email }}
+                        </a>
+                    </td>
+                    <td class="text-right actions-cell">
+                        <a href="{% url 'person_edit' person.id %}" class="icon-button icon-button--primary" title="Editar pessoa">
+                            <span class="material-icons">edit</span>
+                        </a>
+                        <button type="button" class="icon-button icon-button--danger" title="Excluir pessoa" 
+                                onclick="confirmDelete('{{ person.id }}', '{{ person.name }}')">
+                            <span class="material-icons">delete</span>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card card--empty">
+        <div class="empty-state">
+            <span class="material-icons empty-state__icon">sentiment_dissatisfied</span>
+            <h2>Nenhuma pessoa cadastrada</h2>
+            <p>Comece adicionando a primeira pessoa ao sistema.</p>
+            <a href="{% url 'person_create' %}" class="btn btn-primary">
+                <span class="material-icons">person_add</span>
+                Adicionar Pessoa
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+        <div class="modal__header">
+            <h3>Confirmar exclusão</h3>
+        </div>
+        <div class="modal__content">
+            <p>Deseja realmente excluir <strong id="deletePersonName"></strong>?</p>
+        </div>
+        <div class="modal__actions">
+            <button type="button" class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+            <form id="deleteForm" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Excluir</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmDelete(personId, personName) {
+        document.getElementById('deletePersonName').textContent = personName;
+        document.getElementById('deleteForm').action = '/persons/' + personId + '/delete/';
+        document.getElementById('deleteModal').classList.add('open');
+    }
+    
+    function closeModal() {
+        document.getElementById('deleteModal').classList.remove('open');
+    }
+    
+    // Close modal on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+    
+    // Close modal on overlay click
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+</script>
+{% endblock %}

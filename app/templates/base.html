@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TesteFull{% endblock %} - Django</title>
+    
+    <!-- Google Fonts - Material Icons & Roboto -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <nav class="side-menu" aria-label="Menu principal">
+            <div class="nav-list">
+                <a href="{% url 'person_list' %}" class="nav-item {% if request.resolver_match.url_name == 'person_list' %}is-active{% endif %}">
+                    <span class="material-icons">group</span>
+                    <span class="nav-label">Pessoas</span>
+                </a>
+            </div>
+            
+            <p class="side-menu__section">APIs</p>
+            <div class="nav-list">
+                <a href="http://localhost:3000/api" target="_blank" rel="noreferrer" class="nav-item">
+                    <span class="material-icons">code</span>
+                    <span class="nav-label">API Command</span>
+                    <span class="external-icon">
+                        <span class="material-icons">open_in_new</span>
+                    </span>
+                </a>
+                <a href="http://localhost:3001" target="_blank" rel="noreferrer" class="nav-item">
+                    <span class="material-icons">storage</span>
+                    <span class="nav-label">API Query</span>
+                    <span class="external-icon">
+                        <span class="material-icons">open_in_new</span>
+                    </span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+    
+    <!-- Main Content -->
+    <div class="main-wrapper">
+        <!-- Navbar -->
+        <header class="navbar">
+            <button type="button" class="menu-button" aria-label="Abrir menu" onclick="toggleSidebar()">
+                <span class="material-icons">menu</span>
+            </button>
+            
+            <span class="navbar__brand">TesteFull</span>
+            <span class="navbar__divider"></span>
+            
+            <span class="navbar__spacer"></span>
+            
+            <span class="navbar__framework">Django</span>
+            
+            <span class="navbar__spacer"></span>
+            
+            <a href="http://localhost:3000/api" target="_blank" rel="noreferrer" class="icon-button" aria-label="API Docs">
+                <span class="material-icons">description</span>
+            </a>
+        </header>
+        
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                <span class="material-icons">
+                    {% if message.tags == 'success' %}check_circle
+                    {% elif message.tags == 'error' %}error
+                    {% elif message.tags == 'warning' %}warning
+                    {% else %}info{% endif %}
+                </span>
+                <span>{{ message }}</span>
+                <button type="button" class="alert-close" onclick="this.parentElement.remove()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <!-- Page Content -->
+        <main class="content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+        
+        // Close sidebar on escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebarOverlay');
+                sidebar.classList.remove('open');
+                overlay.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>

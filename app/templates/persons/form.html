@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="person-form">
+    <div class="person-form__header">
+        <h1 class="person-form__title">
+            <span class="material-icons person-form__icon">
+                {% if is_edit %}edit{% else %}person_add{% endif %}
+            </span>
+            {{ title }}
+        </h1>
+    </div>
+
+    <div class="card">
+        <form method="post" class="form" novalidate>
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="id_name" class="form-label">
+                    <span class="material-icons">person</span>
+                    Nome completo
+                </label>
+                <input type="text" 
+                       name="name" 
+                       id="id_name" 
+                       class="form-control {% if form.name.errors %}is-invalid{% endif %}"
+                       value="{{ form.name.value|default:'' }}"
+                       placeholder="Digite o nome completo"
+                       maxlength="120"
+                       required
+                       autocomplete="off">
+                <div class="form-hint">
+                    <span id="nameCount">{{ form.name.value|length|default:0 }}</span>/120
+                </div>
+                {% if form.name.errors %}
+                <div class="form-error">
+                    {% for error in form.name.errors %}{{ error }}{% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_email" class="form-label">
+                    <span class="material-icons">email</span>
+                    E-mail
+                </label>
+                <input type="email" 
+                       name="email" 
+                       id="id_email" 
+                       class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                       value="{{ form.email.value|default:'' }}"
+                       placeholder="exemplo@email.com"
+                       maxlength="180"
+                       required
+                       autocomplete="off">
+                <div class="form-hint">
+                    <span id="emailCount">{{ form.email.value|length|default:0 }}</span>/180
+                </div>
+                {% if form.email.errors %}
+                <div class="form-error">
+                    {% for error in form.email.errors %}{{ error }}{% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <span class="material-icons">save</span>
+                    Salvar
+                </button>
+                <a href="{% url 'person_list' %}" class="btn btn-outline">
+                    <span class="material-icons">cancel</span>
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+    
+    <div class="form-help">
+        <span class="material-icons">info</span>
+        <p>Preencha todos os campos obrigatórios para continuar.</p>
+    </div>
+</div>
+
+<script>
+    // Character counter for name
+    const nameInput = document.getElementById('id_name');
+    const nameCount = document.getElementById('nameCount');
+    nameInput.addEventListener('input', function() {
+        nameCount.textContent = this.value.length;
+    });
+    
+    // Character counter for email
+    const emailInput = document.getElementById('id_email');
+    const emailCount = document.getElementById('emailCount');
+    emailInput.addEventListener('input', function() {
+        emailCount.textContent = this.value.length;
+    });
+</script>
+{% endblock %}
