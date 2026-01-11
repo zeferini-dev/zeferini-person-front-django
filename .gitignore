@@ -107,3 +107,5 @@ Thumbs.db
 
 # Static files collected
 staticfiles/
+
+dist
