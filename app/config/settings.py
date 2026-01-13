@@ -73,9 +73,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# API Configuration (CQRS)
-API_COMMAND_URL = os.environ.get('API_COMMAND_URL', 'http://localhost:3000')
-API_QUERY_URL = os.environ.get('API_QUERY_URL', 'http://localhost:3001')
+# API Configuration (via API Gateway)
+API_GATEWAY_URL = os.environ.get('API_GATEWAY_URL', 'http://localhost:8084')
+API_COMMAND_URL = os.environ.get('API_COMMAND_URL', f'{API_GATEWAY_URL}/api/persons')
+API_QUERY_URL = os.environ.get('API_QUERY_URL', f'{API_GATEWAY_URL}/api/query')
 
 # Messages framework
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'

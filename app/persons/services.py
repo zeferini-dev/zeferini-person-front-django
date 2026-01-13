@@ -1,6 +1,6 @@
 """
 Service layer for Person API calls.
-Implements CQRS pattern: Commands → MySQL (port 3000), Queries → MongoDB (port 3001)
+Implements CQRS via API Gateway: Commands → Load Balanced, Queries → MongoDB
 """
 import requests
 from django.conf import settings
@@ -11,7 +11,8 @@ class PersonService:
     """Service for managing Person CRUD operations."""
     
     def __init__(self):
-        self.command_url = f"{settings.API_COMMAND_URL}/persons"
+        # Command URL já inclui /api/persons, Query URL inclui /api/query
+        self.command_url = settings.API_COMMAND_URL
         self.query_url = f"{settings.API_QUERY_URL}/persons"
     
     def list(self) -> list[dict]:
