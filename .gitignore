@@ -98,7 +98,15 @@ node_modules/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Visual Studio Code settings
+.vscode/
+/.vscode/
+
+# Visual Studio settings
 .vs/
+/.vs/
+
 *.swp
 *.swo
 
